@@ -9,11 +9,11 @@ on:
 
 env:
   APP_CONTAINER_IMAGE_TAG_PREFIX: gh-actions-test-
-  IMAGE_CACHE_DIR: ~/cache
-  IMAGE_CACHE_PATH: ~/cache/container-images.tar
+  IMAGES_CACHE_DIR: ~/cache
+  IMAGES_CACHE_PATH: ~/cache/container-images.tar
 
 jobs:
-  build:
+  ci-job:
     runs-on: ubuntu-latest
     steps:
       -
@@ -23,17 +23,17 @@ jobs:
         name: Check docker version
         run: docker info
       -
-        name: Check app container image cache
-        id: app-container-image-cache
+        name: Check container images cache
+        id: container-image-cache
         uses: actions/cache@v3
         with:
-          key: 'app-container-image-cache'
-          path: ${{ env.IMAGE_CACHE_DIR }}
-      - name: Load app container image cache
+          key: 'container-images'
+          path: ${{ env.IMAGES_CACHE_DIR }}
+      - name: Load container image cache
         if: steps.app-container-image-cache.outputs.cache-hit == 'true'
-        run: docker load -i ${IMAGE_CACHE_PATH}
+        run: docker load -i ${IMAGES_CACHE_PATH}
       -
-        name: Build Docker image
+        name: Build container images
         run: |
           docker build \
             --cache-from ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
@@ -41,11 +41,11 @@ jobs:
             -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             .
-      - name: Store app container image cache
+      - name: Store container images cache
         run: |
-          mkdir -p ${IMAGE_CACHE_DIR}
+          mkdir -p ${IMAGES_CACHE_DIR}
           docker save \
-            -o ${IMAGE_CACHE_PATH} \
+            -o ${IMAGES_CACHE_PATH} \
             ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
             ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest
       -
