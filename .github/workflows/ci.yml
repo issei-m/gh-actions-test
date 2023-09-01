@@ -39,7 +39,7 @@ jobs:
             --cache-from ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
             -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
             -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest \
-            --build-arg BUILDKIT_INLINE_CACHE=1
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
             .
       - name: Store app container image cache
         run: |
