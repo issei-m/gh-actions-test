@@ -28,7 +28,7 @@ jobs:
         id: container-images-cache
         uses: actions/cache@v3
         with:
-          key: 'container-images'
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
           path: ${{ env.IMAGES_CACHE_DIR }}
       -
         name: Check
