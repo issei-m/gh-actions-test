@@ -35,17 +35,17 @@ jobs:
       -
         name: Build Docker image
         run: |
-          docker build
-            --cache-from ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest
-            -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest
-            -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest
+          docker build \
+            --cache-from ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
+            -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
+            -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest \
             --build-arg BUILDKIT_INLINE_CACHE=1
             .
       - name: Store app container image cache
         run: |
-          docker save
-            -o ${APP_CONTAINER_IMAGE_CACHE_PATH}
-            ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest
+          docker save \
+            -o ${APP_CONTAINER_IMAGE_CACHE_PATH} \
+            ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
             ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest
       -
         name: Test 1
