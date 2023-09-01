@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_CONTAINER_IMAGE_TAG_PREFIX: gh-actions-test-
-      IMAGES_CACHE_DIR: ~/cache/
-      IMAGES_CACHE_PATH: ~/cache/container-images.tar
+      IMAGES_CACHE_DIR: ./.cache/
+      IMAGES_CACHE_PATH: ./.cache/container-images.tar
     steps:
       -
         name: Checkout code
@@ -46,15 +46,6 @@ jobs:
             -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             .
-      -
-        name: Test 1
-        run: |
-          docker compose run --rm --no-deps app rails -T
-      -
-        name: Test 2
-        run: |
-          docker compose run --rm --no-deps app2 rails -T
-
       - name: Store container images cache
         run: |
           mkdir -p ${IMAGES_CACHE_DIR}
@@ -66,3 +57,11 @@ jobs:
         name: Check
         run: |
           ls -la ${IMAGES_CACHE_DIR}
+      -
+        name: Test 1
+        run: |
+          docker compose run --rm --no-deps app rails -T
+      -
+        name: Test 2
+        run: |
+          docker compose run --rm --no-deps app2 rails -T
