@@ -8,14 +8,13 @@ on:
   pull_request:
     types: [opened, ready_for_review, synchronize]
 
-env:
-  APP_CONTAINER_IMAGE_TAG_PREFIX: gh-actions-test-
-  IMAGES_CACHE_DIR: ~/cache
-  IMAGES_CACHE_PATH: ~/cache/container-images.tar
-
 jobs:
   ci-job:
     runs-on: ubuntu-latest
+    env:
+      APP_CONTAINER_IMAGE_TAG_PREFIX: gh-actions-test-
+      IMAGES_CACHE_DIR: ~/cache
+      IMAGES_CACHE_PATH: ~/cache/container-images.tar
     steps:
       -
         name: Checkout code
