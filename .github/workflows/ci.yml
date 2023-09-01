@@ -7,6 +7,9 @@ on:
   pull_request:
     types: [opened, ready_for_review, synchronize]
 
+env:
+  APP_CONTAINER_IMAGE_TAG_PREFIX: gh-actions-test-
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,25 +21,30 @@ jobs:
         name: Check docker version
         run: docker info
       -
+        name: Check app container image cache
+        id: app-container-image-cache
+        uses: actions/cache@v3
+        with:
+          key: 'app-container-image-cache'
+          paths: /tmp/app-container-image.tar
+      - name: Load app container image cache
+        if: steps.app-container-image-cache.outputs.cache-hit == 'true'
+        run: docker load -i /tmp/app-container-image.tar
+      -
         name: Build Docker image
-        run: docker compose build
-
-  test1:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Test 1
+        run: |
+          docker build
+            --cache-from ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest
+            -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest
+            -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest
+            --build-arg BUILDKIT_INLINE_CACHE=1
+            --target development
+            .
+      -
+        name: Test 1
         run: |
           docker compose run --rm --no-deps app rails -T
-
-  test2:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Test 2
+      -
+        name: Test 2
         run: |
-          docker compose run --rm --no-deps app rails -T
+          docker compose run --rm --no-deps app2 rails -T

@@ -6,3 +6,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+  app2:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
