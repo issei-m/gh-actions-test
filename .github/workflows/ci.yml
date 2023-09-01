@@ -50,6 +50,10 @@ jobs:
             ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest \
             ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest
       -
+        name: Check
+        run: |
+          ls -la ${IMAGES_CACHE_DIR}
+      -
         name: Test 1
         run: |
           docker compose run --rm --no-deps app rails -T
