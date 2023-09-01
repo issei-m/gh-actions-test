@@ -32,6 +32,7 @@ jobs:
           path: ${{ env.IMAGES_CACHE_DIR }}
       -
         name: Check
+        if: steps.container-images-cache.outputs.cache-hit == 'true'
         run: |
           ls -la ${IMAGES_CACHE_DIR}
       - name: Load container image cache
