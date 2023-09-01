@@ -28,7 +28,8 @@ jobs:
         id: container-images-cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
           path: ${{ env.IMAGES_CACHE_DIR }}
       -
         name: Check
