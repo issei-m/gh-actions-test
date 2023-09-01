@@ -9,6 +9,8 @@ on:
 
 env:
   APP_CONTAINER_IMAGE_TAG_PREFIX: gh-actions-test-
+  APP_CONTAINER_IMAGE_CACHE_DIR: ~/cache
+  APP_CONTAINER_IMAGE_CACHE_PATH: ~/cache/app-container-image.tar
 
 jobs:
   build:
@@ -26,10 +28,10 @@ jobs:
         uses: actions/cache@v3
         with:
           key: 'app-container-image-cache'
-          paths: /tmp/app-container-image.tar
+          path: ${{ env.APP_CONTAINER_IMAGE_CACHE_DIR }}
       - name: Load app container image cache
         if: steps.app-container-image-cache.outputs.cache-hit == 'true'
-        run: docker load -i /tmp/app-container-image.tar
+        run: docker load -i ${APP_CONTAINER_IMAGE_CACHE_PATH}
       -
         name: Build Docker image
         run: |
@@ -38,8 +40,13 @@ jobs:
             -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest
             -t ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest
             --build-arg BUILDKIT_INLINE_CACHE=1
-            --target development
             .
+      - name: Store app container image cache
+        run: |
+          docker save
+            -o ${APP_CONTAINER_IMAGE_CACHE_PATH}
+            ${APP_CONTAINER_IMAGE_TAG_PREFIX}app:latest
+            ${APP_CONTAINER_IMAGE_TAG_PREFIX}app2:latest
       -
         name: Test 1
         run: |
