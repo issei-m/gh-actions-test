@@ -15,8 +15,28 @@ jobs:
         name: Checkout code
         uses: actions/checkout@v3
       -
-        name: Build Docker image
+        name: Check docker version
         run: docker info
       -
         name: Build Docker image
         run: docker compose build
+
+  test1:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Test 1
+        run: |
+          docker compose run --rm --no-deps app rails -T
+
+  test2:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Test 2
+        run: |
+          docker compose run --rm --no-deps app rails -T
