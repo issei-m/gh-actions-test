@@ -25,13 +25,17 @@ jobs:
         run: docker info
       -
         name: Check container images cache
-        id: container-image-cache
+        id: container-images-cache
         uses: actions/cache@v3
         with:
           key: 'container-images'
           path: ${{ env.IMAGES_CACHE_DIR }}
+      -
+        name: Check
+        run: |
+          ls -la ${IMAGES_CACHE_DIR}
       - name: Load container image cache
-        if: steps.app-container-image-cache.outputs.cache-hit == 'true'
+        if: steps.container-images-cache.outputs.cache-hit == 'true'
         run: docker load -i ${IMAGES_CACHE_PATH}
       -
         name: Build container images
